@@ -27,6 +27,6 @@ void show_dir_content(char *path)
 
 int main(int argc, char **argv)
 {
-    show_dir_content(argv[1]);
+    
     return (0);
 }
