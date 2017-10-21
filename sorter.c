@@ -553,6 +553,18 @@ void listdir(const char *name, int indent)
 
 FILE * sorter(char * columnName, FILE * moviefile, char * outputDir)
 {
+
+        if (argc != 3)
+        {
+                printf("Invalid amount of arguments.");
+                return 1;
+        }
+        /*if(strcmp(argv[1],"-h")==0){
+		printf("Usage: y86emul <y86 file>\n");
+		return 0;
+        }*/
+        
+
         int line = 0;
 
         //getting the column names
