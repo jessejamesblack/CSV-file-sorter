@@ -58,6 +58,7 @@ struct directorRating{
   struct directorRating *next;
 };
 
+void listdir(const char *name, int indent);
 void printSort(struct Tokenizer, char *columnName);
 void mergesortString(struct Tokenizer rows[], char *columnName, int l, int r);
 
@@ -74,3 +75,4 @@ void mergeFloat(struct Tokenizer rows[], char *columnNameFloat, int l, int m, in
 void mergesortExtra(struct directorRating top10[], int l,int r);
 
 void mergeExtra(struct directorRating top10[], int l, int m, int r);
+

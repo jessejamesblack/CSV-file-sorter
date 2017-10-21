@@ -551,15 +551,8 @@ void listdir(const char *name, int indent)
         closedir(dir);
 }
 
-int main(int argc, char **argv)
+FILE * sorter(char * columnName, FILE * moviefile, char * outputDir)
 {
-
-        if (argc != 3)
-        {
-                printf("Invalid amount of arguments.");
-                return 1;
-        }
-        listdir(".", 0);
         int line = 0;
 
         //getting the column names
@@ -656,7 +649,7 @@ int main(int argc, char **argv)
         }
 
         // extra credit section
-
+/*
         // top 10 imdb rating averages of directors
         struct directorRating *headg = NULL, *ptr1 = headg;
         int f = 0;
@@ -749,5 +742,8 @@ int main(int argc, char **argv)
                 Brian = Brian->next;
                 free(tempppp);
         }
+
+
+        */
         return 0;
 }
