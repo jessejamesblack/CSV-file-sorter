@@ -559,6 +559,11 @@ int main(int argc, char **argv)
                 printf("Invalid amount of arguments.");
                 return 1;
         }
+        /*if(strcmp(argv[1],"-h")==0){
+		printf("Usage: y86emul <y86 file>\n");
+		return 0;
+        }*/
+        
         listdir(".", 0);
         int line = 0;
 
