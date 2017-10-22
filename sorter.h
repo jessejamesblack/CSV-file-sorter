@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <regex.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <dirent.h>
-
+#include <sys/wait.h>
 
 /*****
 *
@@ -75,4 +76,6 @@ void mergeFloat(struct Tokenizer rows[], char *columnNameFloat, int l, int m, in
 void mergesortExtra(struct directorRating top10[], int l,int r);
 
 void mergeExtra(struct directorRating top10[], int l, int m, int r);
+
+FILE * sorter(char * columnName, FILE * moviefile, char * outputDir, char * filename);
 

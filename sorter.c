@@ -1,5 +1,6 @@
 #include "sorter.h"
 
+
 //Function to remove unnecessary leading and trailing whitespace characters.
 //Returns a string with the whitespace removed.
 char *trimwhitespace(char *str)
@@ -58,77 +59,77 @@ char *strtokk(char *str, char const *delims)
 
 // Function that prints our row struct out.
 // This is used to reprint the newly sorted CSV file at the end.
-void printRecord(struct Tokenizer *tk)
+void printRecord(struct Tokenizer *tk, FILE * f)
 {
-        printf("%s,", tk->color);
-        printf("%s,", tk->director_name);
+        fprintf(f,"%s,", tk->color);
+        fprintf(f,"%s,", tk->director_name);
         if (tk->num_critic_for_reviews == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else
-                printf("%lu,", tk->num_critic_for_reviews);
+                fprintf(f,"%lu,", tk->num_critic_for_reviews);
         if (tk->duration == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else
-                printf("%lu,", tk->duration);
+                fprintf(f,"%lu,", tk->duration);
         if (tk->director_facebook_likes == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else
-                printf("%lu,", tk->director_facebook_likes);
+                fprintf(f,"%lu,", tk->director_facebook_likes);
         if (tk->actor_3_facebook_likes == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else
-                printf("%lu,", tk->actor_3_facebook_likes);
-        printf("%s,", tk->actor_2_name);
-        printf("%lu,", tk->actor_1_facebook_likes);
+                fprintf(f,"%lu,", tk->actor_3_facebook_likes);
+        fprintf(f,"%s,", tk->actor_2_name);
+        fprintf(f,"%lu,", tk->actor_1_facebook_likes);
         if (tk->gross == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else
-                printf("%lu,", tk->gross);
-        printf("%s,", tk->genres);
-        printf("%s,", tk->actor_1_name);
+                fprintf(f,"%lu,", tk->gross);
+        fprintf(f,"%s,", tk->genres);
+        fprintf(f,"%s,", tk->actor_1_name);
         if (strstr(tk->movie_title, ",") != NULL)
         {
-                printf("\"%s\",", tk->movie_title);
+                fprintf(f,"\"%s\",", tk->movie_title);
         }
         else
         {
-                printf("%s,", tk->movie_title);
+                fprintf(f,"%s,", tk->movie_title);
         }
-        printf("%lu,", tk->num_voted_users);
-        printf("%lu,", tk->cast_total_facebook_likes);
-        printf("%s,", tk->actor_3_name);
-        printf("%lu,", tk->facenumber_in_poster);
-        printf("%s,", tk->plot_keywords);
-        printf("%s,", tk->movie_imdb_link);
-        printf("%lu,", tk->num_user_for_reviews);
-        printf("%s,", tk->language);
-        printf("%s,", tk->country);
-        printf("%s,", tk->content_rating);
+        fprintf(f,"%lu,", tk->num_voted_users);
+        fprintf(f,"%lu,", tk->cast_total_facebook_likes);
+        fprintf(f,"%s,", tk->actor_3_name);
+        fprintf(f,"%lu,", tk->facenumber_in_poster);
+        fprintf(f,"%s,", tk->plot_keywords);
+        fprintf(f,"%s,", tk->movie_imdb_link);
+        fprintf(f,"%lu,", tk->num_user_for_reviews);
+        fprintf(f,"%s,", tk->language);
+        fprintf(f,"%s,", tk->country);
+        fprintf(f,"%s,", tk->content_rating);
         if (tk->budget == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else
-                printf("%lu,", tk->budget);
+                fprintf(f,"%lu,", tk->budget);
         if (tk->title_year == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else
-                printf("%lu,", tk->title_year);
-        printf("%lu,", tk->actor_2_facebook_likes);
+                fprintf(f,"%lu,", tk->title_year);
+        fprintf(f,"%lu,", tk->actor_2_facebook_likes);
         if (tk->imdb_score == 6)
-                printf("%d,", 6);
+                fprintf(f,"%d,", 6);
         else
-                printf("%.1f,", tk->imdb_score);
+                fprintf(f,"%.1f,", tk->imdb_score);
 
         if (tk->aspect_ratio == 16.00)
-                printf("%.0f,", tk->aspect_ratio);
+                fprintf(f,"%.0f,", tk->aspect_ratio);
         else if (tk->aspect_ratio == 0)
-                printf("%s", ",");
+                fprintf(f,"%s", ",");
         else if (tk->aspect_ratio == 0.00)
-                printf("%.0f,", tk->aspect_ratio);
+                fprintf(f,"%.0f,", tk->aspect_ratio);
         else
-                printf("%.2f,", tk->aspect_ratio);
+                fprintf(f,"%.2f,", tk->aspect_ratio);
 
-        printf("%lu", tk->movie_facebook_likes);
-        printf("\n");
+        fprintf(f,"%lu", tk->movie_facebook_likes);
+        fprintf(f,"\n");
 }
 
 // This function creates a tokenizer struct out a char * line of the CSV file.
@@ -551,27 +552,16 @@ void listdir(const char *name, int indent)
         closedir(dir);
 }
 
-FILE * sorter(char * columnName, FILE * moviefile, char * outputDir)
+FILE * sorter(char * columnName, FILE * moviefile, char * outputDir, char * filename)
 {
-
-        if (argc != 3)
-        {
-                printf("Invalid amount of arguments.");
-                return 1;
-        }
-        /*if(strcmp(argv[1],"-h")==0){
-		printf("Usage: y86emul <y86 file>\n");
-		return 0;
-        }*/
-        
-
+        //printf("jesse\n");
         int line = 0;
 
         //getting the column names
         char *str1 = malloc(1024);
         char bufferColumn[1024];
         int i, ch, blah = 0;
-        for (i = 0; (i < (sizeof(bufferColumn) - 1) && ((ch = fgetc(stdin)) != EOF) && (ch != '\r')); i++)
+        for (i = 0; (i < (sizeof(bufferColumn) - 1) && ((ch = fgetc(moviefile)) != EOF) && (ch != '\r')); i++)
         {
                 bufferColumn[i] = ch;
                 blah = 1;
@@ -579,19 +569,19 @@ FILE * sorter(char * columnName, FILE * moviefile, char * outputDir)
         if (blah == 0)
         {
                 printf("ERROR: Empty file.\n");
-                return 1;
+                return NULL;
         }
         bufferColumn[i] = '\0';
 
         struct Tokenizer *head = NULL, *curr = NULL, *newNode = NULL;
 
         //getting the rest of the rows
-        while (fgets(str1, 1024, stdin) != NULL)
+        while (fgets(str1, 1024, moviefile) != NULL)
         {
                 char buffer[1024];
                 int i, ch;
                 // check for empty line
-                for (i = 0; (i < (sizeof(buffer) - 1) && ((ch = fgetc(stdin)) != EOF) && (ch != '\r')); i++)
+                for (i = 0; (i < (sizeof(buffer) - 1) && ((ch = fgetc(moviefile)) != EOF) && (ch != '\r')); i++)
                         buffer[i] = ch;
                 buffer[i] = '\0';
                 // create tokenizer struct and store at next open spot in array
@@ -615,8 +605,21 @@ FILE * sorter(char * columnName, FILE * moviefile, char * outputDir)
         if (line == 0)
         {
                 printf("Error: No Entries in CSV to sort.\n");
-                return 1;
+                return NULL;
         }
+
+        /*
+           Creating a new file and new file name.
+        
+        */
+       // printf("%s\n", filename);
+       // printf("hello");
+
+        char * newfilename = malloc(strlen(filename)+9);
+        strcpy(newfilename,"-sorted-");
+        strcat(newfilename, filename);
+        FILE * outputFile = fopen(newfilename, "ab+");
+
 
         struct Tokenizer rows[line];
         struct Tokenizer *ptr = head;
@@ -629,7 +632,6 @@ FILE * sorter(char * columnName, FILE * moviefile, char * outputDir)
         } while (ptr != NULL);
 
         int l = 0, r = line - 1;
-        char *columnName = argv[2];
 
         if ((strcmp(columnName, "num_critic_for_reviews") == 0) || (strcmp(columnName, "duration") == 0) || (strcmp(columnName, "director_facebook_likes") == 0) || (strcmp(columnName, "actor_3_facebook_likes") == 0) || (strcmp(columnName, "actor_1_facebook_likes") == 0) || (strcmp(columnName, "gross") == 0) || (strcmp(columnName, "num_voted_users") == 0) || (strcmp(columnName, "cast_total_facebook_likes") == 0) || (strcmp(columnName, "facenumber_in_poster") == 0) || (strcmp(columnName, "num_user_for_reviews") == 0) || (strcmp(columnName, "budget") == 0) ||
             (strcmp(columnName, "title_year") == 0) || (strcmp(columnName, "actor_2_facebook_likes") == 0) || (strcmp(columnName, "movie_facebook_likes") == 0))
@@ -648,114 +650,163 @@ FILE * sorter(char * columnName, FILE * moviefile, char * outputDir)
         else
         {
                 printf("Not a valid column to sort.\n");
-                return 1;
         }
 
         int z = 0;
         printf("%s\n", bufferColumn);
         while (z < line)
         {
-                printRecord(&rows[z]);
-                //printShort(&rows[z], columnName);
+                printRecord(&rows[z], outputFile);
                 z++;
         }
 
-        // extra credit section
-/*
-        // top 10 imdb rating averages of directors
-        struct directorRating *headg = NULL, *ptr1 = headg;
-        int f = 0;
+        return outputFile;
+}
 
-        for (f = 0; f < line; f++)
-        {
-                if (headg == NULL)
-                {
-                        headg = DRcreate(rows[f].director_name, rows[f].imdb_score, 1);
-                }
-                while (ptr1 != NULL)
-                {
-                        if (strcmp(ptr1->directorName, rows[f].director_name) == 0)
-                        {
-                                ptr1->directorRating = ptr1->directorRating + rows[f].imdb_score;
-                                ptr1->appearances++;
-                                //    printf("name: %s rating total: %lf appearances: %d\n", ptr1->directorName, ptr1->directorRating, ptr1->appearances);
-                                break;
+
+
+
+const char *get_filename_ext(const char *filename) {
+        //printf("in file ext funct\n");
+    const char *dot = strrchr(filename, '.');
+    if(!dot || dot == filename) return "";
+    return dot + 1;
+}
+
+
+
+int is_Valid_CSV(struct dirent * file) {
+        //printf("%s\n",get_filename_ext(file->d_name));
+        if(strcmp(get_filename_ext(file->d_name), "csv") == 0){
+                return 0;
+        }
+    return -1;
+
+}
+
+
+void sortDir(char* path, char * columnName, char * outputdirectory){
+            struct dirent *currentDirFile;  // Pointer for directory entry
+            DIR *currentDir = opendir(path);
+            if (currentDir == NULL)  // opendir returns NULL if couldn't open directory
+            {
+                printf("Could not open current directory" );
+                
+            }
+            while ((currentDirFile = readdir(currentDir)) != NULL){
+                //printf("%s\n", currentDirFile->d_name);
+                 if(currentDirFile->d_type == DT_DIR){
+                        // fork this new directory to be processed
+                        if(!strcmp(currentDirFile->d_name,".")){
+                                continue;
                         }
-                        else if (ptr1->next == NULL)
-                        {
-                                ptr1->next = DRcreate(rows[f].director_name, rows[f].imdb_score, 1);
-                                break;
+                        if(!strcmp(currentDirFile->d_name,"..")){
+                                continue;
                         }
-                        else
-                        {
-                                ptr1 = ptr1->next;
+                        path = currentDirFile->d_name;
+                       // sortDir(path,columnName,outputdirectory);
+                 }      
+                else if(is_Valid_CSV(currentDirFile) == 0){
+                                        //fork a sort on that file
+                                        printf("Sort: %s\n", currentDirFile->d_name);
+
+                                        pid_t parent = getpid();
+                                        pid_t pid = fork();
+
+                                        if(pid < 0){
+                                                printf("error in fork\n");
+                                        }
+                                        else if(pid == 0){ // child
+                                                 printf("child PID: %d\n", pid);
+                                                FILE * sortfileptr = fopen(currentDirFile->d_name,"r+");
+                                                FILE * newfile = sorter(columnName, sortfileptr, outputdirectory, currentDirFile->d_name);
+   
+                                        }
+                                        else{ // parent
+                                               int status;
+                                                if (wait(&status) >= 0)
+                                                {
+                                                    if (WIFEXITED(status))
+                                                    {
+                                                        /* Child process exited normally, through `return` or `exit` */
+                                                        printf("Child process exited with %d status\n", WEXITSTATUS(status));
+                                                    }
+                                                }
+                                        }
+                                
+                        }
+                        else{
+                                continue;
                         }
                 }
 
-                ptr1 = headg;
+             
+            closedir(currentDir); 
         }
 
-        struct directorRating *temp1 = headg;
-        int len = 0;
-
-        while (temp1 != NULL)
-        {
-                len++;
-                temp1 = temp1->next;
-        }
-
-        struct directorRating top10[len];
-        struct directorRating *ptr2 = headg;
-        int p = 0;
-        do
-        {
-                top10[p] = *ptr2;
-                ptr2 = ptr2->next;
-                p++;
-        } while (ptr2 != NULL);
-
-        int lefty = 0, righty = len - 1;
-        mergesortExtra(top10, lefty, righty);
-        int order = 1;
-        int e;
-        if (line > 9)
-        {
-                printf("\n\n-------Top 10 Average Director IMDB Rating-------\n\n");
-                for (e = len - 1; e > len - 11; e--)
+int main(int argc, char **argv){
+        //need to correct this
+         if (argc < 3)
                 {
-                        printf("%d. Director: %s, Average IMDB Rating: %lf \n", order, top10[e].directorName, (top10[e].directorRating / top10[e].appearances));
-                        order++;
+                        printf("Invalid amount of arguments.");
+                        return 1;
+                }
+
+        char * columnName = argv[2];
+        char * directory;
+        char * outputdirectory;
+        char buffer[1024];
+
+        printf("%d\n", argc);
+        //printf("%s  %s   \n",argv[0],argv[1],argv[2],argv[3],argv[4] );
+
+        if(argc == 3){
+                getcwd(buffer,sizeof(buffer));
+                                directory = buffer;
+        }
+        else
+        if(argc == 5){
+                if (strcmp(argv[3], "-d") == 0){
+                        directory = argv[4];
+                        getcwd(buffer,sizeof(buffer));
+                        outputdirectory = buffer;
+                }
+        else{
+                getcwd(buffer,sizeof(buffer));
+                directory = buffer;
+                outputdirectory = argv[4];
+
                 }
         }
         else
-        {
-                printf("\n\nNot enough data to compute top 10 average IMDB score per director.\n\n");
-        }
-
-        // Freeing memory that was allocated in whole project
-        int gg = 0;
-        for (gg = 0; gg < line; gg++)
-                TKDestroy(&rows[gg]);
-        for (gg = 0; gg < len; gg++)
-                TopDestroy(&top10[gg]);
-        free(str1);
-        struct Tokenizer *Jesse = head;
-        struct directorRating *Brian = headg;
-
-        while (Jesse != NULL)
-        {
-                struct Tokenizer *temppp = Jesse;
-                Jesse = Jesse->next;
-                free(temppp);
-        }
-        while (Brian != NULL)
-        {
-                struct directorRating *tempppp = Brian;
-                Brian = Brian->next;
-                free(tempppp);
+                if(argc == 7){
+                directory = argv[4];
+                outputdirectory = argv[6];
+                }
+        else{
+                printf("Invalid input.\n");
+                return -1;
         }
 
 
-        */
+        /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir, 
+         -o output directory*/
+
+
+        //listdir(".", 0);
+
+        sortDir(directory, columnName, outputdirectory);
+
+        // traverse through directories
+              // looking for csv files
+                // then fork and call sorter(inputfile, outputfile, outputdirectory)
+                // inside sorter first check if the file is a valid movie file to sort
+                // sort it and then output to the file specified and the directory specified
+
+
+
+
+
+
         return 0;
 }
