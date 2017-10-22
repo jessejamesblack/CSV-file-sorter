@@ -77,5 +77,5 @@ void mergesortExtra(struct directorRating top10[], int l,int r);
 
 void mergeExtra(struct directorRating top10[], int l, int m, int r);
 
-FILE * sorter(char * columnName, FILE * moviefile, char * outputDir, char * filename);
+void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filename);
 
