@@ -557,12 +557,15 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
         //printf("jesse\n");
         int line = 0;
 
-        printf("%s\n", filename);
+        printf("outPut Directory: %s\n", outputDir);
+        printf("File name: %s\n", filename);
 
         //getting the column names
-        char *str1 = malloc(1024);
+        char * str1 = malloc(1024);
         char bufferColumn[1024];
         int i, ch, blah = 0;
+          //      printf("\ngot here 1\n");
+
         for (i = 0; (i < (sizeof(bufferColumn) - 1) && ((ch = fgetc(moviefile)) != EOF) && (ch != '\r')); i++)
         {
                 bufferColumn[i] = ch;
@@ -575,6 +578,7 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
         bufferColumn[i] = '\0';
 
         struct Tokenizer *head = NULL, *curr = NULL, *newNode = NULL;
+     //   printf("\ngot here 2\n");
 
         //getting the rest of the rows
         while (fgets(str1, 1024, moviefile) != NULL)
@@ -614,13 +618,24 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
            Creating a new file and new file name.
         
         */
+      //  printf("\ngot here 3\n");
 
 
         char * newfilename = malloc(strlen(filename)+9);
         strcpy(newfilename,"-sorted-");
         strcat(newfilename, filename);
         printf("\nnew file name:  %s", newfilename);
-        FILE * outputFile = fopen(newfilename, "w");
+
+
+        char outputNewDir[1024];
+        strcpy(outputNewDir,outputDir);
+        strcat(outputNewDir, "/");
+        strcat(outputNewDir, newfilename);
+
+        printf("\noutputdirectory:%s\n", outputNewDir);
+
+
+        FILE * outputFile = fopen(outputNewDir, "w");
         printf("\n\n----file created----\n\n");
 
         struct Tokenizer rows[line];
@@ -655,7 +670,7 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
         }
 
         int z = 0;
-      //  printf("%s\n", bufferColumn);
+        fprintf(outputFile, "%s\n", bufferColumn);
         while (z < line)
         {
                 printRecord(&rows[z], outputFile);
@@ -690,7 +705,7 @@ int is_Valid_CSV(struct dirent * file) {
 }
 
 
-void sortDir(char* path, char * columnName){
+void sortDir(char* path, char * columnName, char * outputdirectory, int obool){
             struct dirent *currentDirFile;  // Pointer for directory entry
             DIR *currentDir = opendir(path);
             int children = 0;
@@ -725,7 +740,7 @@ void sortDir(char* path, char * columnName){
                                   printf("error in fork\n");
                         }
                         if(pid == 0){ // child
-                         sortDir(fullpath,columnName);  
+                         sortDir(fullpath,columnName, outputdirectory, obool);  
                          exit(0);
                         }
                         else{ // parent
@@ -742,14 +757,28 @@ void sortDir(char* path, char * columnName){
 
                         pid_t pid, w;
                         int status;
+
+                        char outputPath[1024];
+                        strcpy(outputPath,path);
+
+
+                        char fullpath[1024];
+                        strcpy(fullpath,path);
+                        strcat(fullpath, "/");
+                        strcat(fullpath, currentDirFile->d_name);
+
+
                         pid = fork();
 
                         if(pid < 0){
                                   printf("error in fork\n");
                         }
                         if(pid == 0){ // child
-                                FILE * sortfileptr = fopen(currentDirFile->d_name,"r+");
-                                sorter(columnName, sortfileptr,"", currentDirFile->d_name);
+                                FILE * sortfileptr = fopen(fullpath,"r+");
+                                if (obool == 0){
+                                        outputdirectory = outputPath;
+                                }
+                                sorter(columnName, sortfileptr,outputdirectory, currentDirFile->d_name);
                                 exit(0);
                         }
                         else{ // parent
@@ -784,6 +813,9 @@ int main(int argc, char **argv){
         char * outputdirectory;
         char buffer[1024];
 
+        // 1 if a output directory is specified, 0 if no
+        int obool = 0;
+
         //printf("%d\n", argc);
         //printf("%s  %s   \n",argv[0],argv[1],argv[2],argv[3],argv[4] );
 
@@ -803,13 +835,14 @@ int main(int argc, char **argv){
                 getcwd(buffer,sizeof(buffer));
                 directory = buffer;
                 outputdirectory = argv[4];
-
+                obool = 1;
                 }
         }
         else
                 if(argc == 7){
                 directory = argv[4];
                 outputdirectory = argv[6];
+                obool = 1;
                 }
         else{
                 printf("Invalid input.\n");
@@ -823,7 +856,7 @@ int main(int argc, char **argv){
 
         //listdir(".", 0);
 
-        sortDir(directory, columnName);
+        sortDir(directory, columnName, outputdirectory, obool);
 
         // traverse through directories
               // looking for csv files
