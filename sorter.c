@@ -743,12 +743,6 @@ void sortDir(char* path, char * columnName, char * outputdirectory, int obool){
                          sortDir(fullpath,columnName, outputdirectory, obool);  
                          exit(0);
                         }
-                        else{ // parent
-                        do{
-                            w = waitpid(pid, &status, 0);
-                        }
-                        while(!WIFEXITED(status) && !WIFSIGNALED(status));
-                        }
                                // exit(0);
                  }      
                 else if(is_Valid_CSV(currentDirFile) == 0){
@@ -781,12 +775,7 @@ void sortDir(char* path, char * columnName, char * outputdirectory, int obool){
                                 sorter(columnName, sortfileptr,outputdirectory, currentDirFile->d_name);
                                 exit(0);
                         }
-                        else{ // parent
-                           do{
-                            w = waitpid(pid, &status, 0);
-                        }
-                        while(!WIFEXITED(status) && !WIFSIGNALED(status));
-                        }
+                
                                 
                 }
                 else{
