@@ -1,6 +1,5 @@
 #include "sorter.h"
 
-
 //Function to remove unnecessary leading and trailing whitespace characters.
 //Returns a string with the whitespace removed.
 char *trimwhitespace(char *str)
@@ -59,77 +58,77 @@ char *strtokk(char *str, char const *delims)
 
 // Function that prints our row struct out.
 // This is used to reprint the newly sorted CSV file at the end.
-void printRecord(struct Tokenizer *tk, FILE * f)
+void printRecord(struct Tokenizer *tk, FILE *f)
 {
-        fprintf(f,"%s,", tk->color);
-        fprintf(f,"%s,", tk->director_name);
+        fprintf(f, "%s,", tk->color);
+        fprintf(f, "%s,", tk->director_name);
         if (tk->num_critic_for_reviews == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else
-                fprintf(f,"%lu,", tk->num_critic_for_reviews);
+                fprintf(f, "%lu,", tk->num_critic_for_reviews);
         if (tk->duration == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else
-                fprintf(f,"%lu,", tk->duration);
+                fprintf(f, "%lu,", tk->duration);
         if (tk->director_facebook_likes == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else
-                fprintf(f,"%lu,", tk->director_facebook_likes);
+                fprintf(f, "%lu,", tk->director_facebook_likes);
         if (tk->actor_3_facebook_likes == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else
-                fprintf(f,"%lu,", tk->actor_3_facebook_likes);
-        fprintf(f,"%s,", tk->actor_2_name);
-        fprintf(f,"%lu,", tk->actor_1_facebook_likes);
+                fprintf(f, "%lu,", tk->actor_3_facebook_likes);
+        fprintf(f, "%s,", tk->actor_2_name);
+        fprintf(f, "%lu,", tk->actor_1_facebook_likes);
         if (tk->gross == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else
-                fprintf(f,"%lu,", tk->gross);
-        fprintf(f,"%s,", tk->genres);
-        fprintf(f,"%s,", tk->actor_1_name);
+                fprintf(f, "%lu,", tk->gross);
+        fprintf(f, "%s,", tk->genres);
+        fprintf(f, "%s,", tk->actor_1_name);
         if (strstr(tk->movie_title, ",") != NULL)
         {
-                fprintf(f,"\"%s\",", tk->movie_title);
+                fprintf(f, "\"%s\",", tk->movie_title);
         }
         else
         {
-                fprintf(f,"%s,", tk->movie_title);
+                fprintf(f, "%s,", tk->movie_title);
         }
-        fprintf(f,"%lu,", tk->num_voted_users);
-        fprintf(f,"%lu,", tk->cast_total_facebook_likes);
-        fprintf(f,"%s,", tk->actor_3_name);
-        fprintf(f,"%lu,", tk->facenumber_in_poster);
-        fprintf(f,"%s,", tk->plot_keywords);
-        fprintf(f,"%s,", tk->movie_imdb_link);
-        fprintf(f,"%lu,", tk->num_user_for_reviews);
-        fprintf(f,"%s,", tk->language);
-        fprintf(f,"%s,", tk->country);
-        fprintf(f,"%s,", tk->content_rating);
+        fprintf(f, "%lu,", tk->num_voted_users);
+        fprintf(f, "%lu,", tk->cast_total_facebook_likes);
+        fprintf(f, "%s,", tk->actor_3_name);
+        fprintf(f, "%lu,", tk->facenumber_in_poster);
+        fprintf(f, "%s,", tk->plot_keywords);
+        fprintf(f, "%s,", tk->movie_imdb_link);
+        fprintf(f, "%lu,", tk->num_user_for_reviews);
+        fprintf(f, "%s,", tk->language);
+        fprintf(f, "%s,", tk->country);
+        fprintf(f, "%s,", tk->content_rating);
         if (tk->budget == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else
-                fprintf(f,"%lu,", tk->budget);
+                fprintf(f, "%lu,", tk->budget);
         if (tk->title_year == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else
-                fprintf(f,"%lu,", tk->title_year);
-        fprintf(f,"%lu,", tk->actor_2_facebook_likes);
+                fprintf(f, "%lu,", tk->title_year);
+        fprintf(f, "%lu,", tk->actor_2_facebook_likes);
         if (tk->imdb_score == 6)
-                fprintf(f,"%d,", 6);
+                fprintf(f, "%d,", 6);
         else
-                fprintf(f,"%.1f,", tk->imdb_score);
+                fprintf(f, "%.1f,", tk->imdb_score);
 
         if (tk->aspect_ratio == 16.00)
-                fprintf(f,"%.0f,", tk->aspect_ratio);
+                fprintf(f, "%.0f,", tk->aspect_ratio);
         else if (tk->aspect_ratio == 0)
-                fprintf(f,"%s", ",");
+                fprintf(f, "%s", ",");
         else if (tk->aspect_ratio == 0.00)
-                fprintf(f,"%.0f,", tk->aspect_ratio);
+                fprintf(f, "%.0f,", tk->aspect_ratio);
         else
-                fprintf(f,"%.2f,", tk->aspect_ratio);
+                fprintf(f, "%.2f,", tk->aspect_ratio);
 
-        fprintf(f,"%lu", tk->movie_facebook_likes);
-        fprintf(f,"\n");
+        fprintf(f, "%lu", tk->movie_facebook_likes);
+        fprintf(f, "\n");
 }
 
 // This function creates a tokenizer struct out a char * line of the CSV file.
@@ -552,7 +551,7 @@ void printShort(struct Tokenizer *tk, char *columnName)
         closedir(dir);
 }*/
 
-void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filename)
+void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
 {
         //printf("jesse\n");
         int line = 0;
@@ -561,10 +560,10 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
         printf("File name: %s\n", filename);
 
         //getting the column names
-        char * str1 = malloc(1024);
+        char *str1 = malloc(1024);
         char bufferColumn[1024];
         int i, ch, blah = 0;
-          //      printf("\ngot here 1\n");
+        //      printf("\ngot here 1\n");
 
         for (i = 0; (i < (sizeof(bufferColumn) - 1) && ((ch = fgetc(moviefile)) != EOF) && (ch != '\r')); i++)
         {
@@ -578,7 +577,7 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
         bufferColumn[i] = '\0';
 
         struct Tokenizer *head = NULL, *curr = NULL, *newNode = NULL;
-     //   printf("\ngot here 2\n");
+        //   printf("\ngot here 2\n");
 
         //getting the rest of the rows
         while (fgets(str1, 1024, moviefile) != NULL)
@@ -606,7 +605,7 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
                         curr->next = NULL;
                         line++;
                 }
-               // printf("%s\n", buffer);
+                // printf("%s\n", buffer);
         }
 
         if (line == 0)
@@ -618,24 +617,21 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
            Creating a new file and new file name.
         
         */
-      //  printf("\ngot here 3\n");
+        //  printf("\ngot here 3\n");
 
-
-        char * newfilename = malloc(strlen(filename)+9);
-        strcpy(newfilename,"-sorted-");
+        char *newfilename = malloc(strlen(filename) + 9);
+        strcpy(newfilename, "-sorted-");
         strcat(newfilename, filename);
         printf("\nnew file name:  %s", newfilename);
 
-
         char outputNewDir[1024];
-        strcpy(outputNewDir,outputDir);
+        strcpy(outputNewDir, outputDir);
         strcat(outputNewDir, "/");
         strcat(outputNewDir, newfilename);
 
         printf("\noutputdirectory:%s\n", outputNewDir);
 
-
-        FILE * outputFile = fopen(outputNewDir, "w");
+        FILE *outputFile = fopen(outputNewDir, "w");
         printf("\n\n----file created----\n\n");
 
         struct Tokenizer rows[line];
@@ -680,126 +676,131 @@ void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filena
         fclose(outputFile);
 }
 
-
-
-
-const char *get_filename_ext(const char *filename) {
+const char *get_filename_ext(const char *filename)
+{
         //printf("in file ext funct\n");
-    const char *dot = strrchr(filename, '.');
-    if(!dot || dot == filename) return "";
-    return dot + 1;
+        const char *dot = strrchr(filename, '.');
+        if (!dot || dot == filename)
+                return "";
+        return dot + 1;
 }
 
-
-
-int is_Valid_CSV(struct dirent * file) {
+int is_Valid_CSV(struct dirent *file)
+{
         //printf("%s\n",get_filename_ext(file->d_name));
-        if(strstr(file->d_name,"-sorted-")){
+        if (strstr(file->d_name, "-sorted-"))
+        {
                 return -1;
         }
-        if(strcmp(get_filename_ext(file->d_name), "csv") == 0){
+        if (strcmp(get_filename_ext(file->d_name), "csv") == 0)
+        {
                 return 0;
         }
-    return -1;
-
+        return -1;
 }
 
-
-void sortDir(char* path, char * columnName, char * outputdirectory, int obool){
-            struct dirent *currentDirFile;  // Pointer for directory entry
-            DIR *currentDir = opendir(path);
-            int children = 0;
-            if (currentDir == NULL)  // opendir returns NULL if couldn't open directory
-            {
-                printf("Could not open current directory" );
-                
-            }
-            while ((currentDirFile = readdir(currentDir)) != NULL){
-                 if(currentDirFile->d_type == DT_DIR){
+void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
+{
+        struct dirent *currentDirFile; // Pointer for directory entry
+        DIR *currentDir = opendir(path);
+        int children = 0;
+        if (currentDir == NULL) // opendir returns NULL if couldn't open directory
+        {
+                printf("Could not open current directory");
+        }
+        while ((currentDirFile = readdir(currentDir)) != NULL)
+        {
+                if (currentDirFile->d_type == DT_DIR)
+                {
                         // fork this new directory to be processed
-                        if(strcmp(currentDirFile->d_name,".") == 0){
+                        if (strcmp(currentDirFile->d_name, ".") == 0)
+                        {
                                 continue;
                         }
-                        if(strcmp(currentDirFile->d_name,"..") == 0){
+                        if (strcmp(currentDirFile->d_name, "..") == 0)
+                        {
                                 continue;
                         }
-                        if(strcmp(currentDirFile->d_name,".git") == 0){
+                        if (strcmp(currentDirFile->d_name, ".git") == 0)
+                        {
                                 continue;
                         }
                         printf("VALID DIRECTORY:    %s\n", currentDirFile->d_name);
-                             char fullpath[1024];
-                             strcpy(fullpath,path);
-                             strcat(fullpath, "/");
-                             strcat(fullpath, currentDirFile->d_name);
-                             // need to creat a new path with oldpath/newpath 
-                             pid_t pid, w;
-                             int status;
-                             pid = fork();
+                        char fullpath[1024];
+                        strcpy(fullpath, path);
+                        strcat(fullpath, "/");
+                        strcat(fullpath, currentDirFile->d_name);
+                        // need to creat a new path with oldpath/newpath
+                        pid_t pid, w;
+                        int status;
+                        pid = fork();
 
-                        if(pid < 0){
-                                  printf("error in fork\n");
+                        if (pid < 0)
+                        {
+                                printf("error in fork\n");
                         }
-                        if(pid == 0){ // child
-                         sortDir(fullpath,columnName, outputdirectory, obool);  
-                         exit(0);
+                        if (pid == 0)
+                        { // child
+                                sortDir(fullpath, columnName, outputdirectory, obool);
+                                exit(0);
                         }
-                               // exit(0);
-                 }      
-                else if(is_Valid_CSV(currentDirFile) == 0){
-                //fork a sort on that file
+                        // exit(0);
+                }
+                else if (is_Valid_CSV(currentDirFile) == 0)
+                {
+                        //fork a sort on that file
                         printf("CSV FILE: ----- Sorting it: %s\n", currentDirFile->d_name);
 
                         pid_t pid, w;
                         int status;
 
                         char outputPath[1024];
-                        strcpy(outputPath,path);
-
+                        strcpy(outputPath, path);
 
                         char fullpath[1024];
-                        strcpy(fullpath,path);
+                        strcpy(fullpath, path);
                         strcat(fullpath, "/");
                         strcat(fullpath, currentDirFile->d_name);
 
-
                         pid = fork();
 
-                        if(pid < 0){
-                                  printf("error in fork\n");
+                        if (pid < 0)
+                        {
+                                printf("error in fork\n");
                         }
-                        if(pid == 0){ // child
-                                FILE * sortfileptr = fopen(fullpath,"r+");
-                                if (obool == 0){
+                        if (pid == 0)
+                        { // child
+                                FILE *sortfileptr = fopen(fullpath, "r+");
+                                if (obool == 0)
+                                {
                                         outputdirectory = outputPath;
                                 }
-                                sorter(columnName, sortfileptr,outputdirectory, currentDirFile->d_name);
+                                sorter(columnName, sortfileptr, outputdirectory, currentDirFile->d_name);
                                 exit(0);
                         }
-                
-                                
                 }
-                else{
-                printf("INVALID FILE:     %s\n", currentDirFile->d_name);
-                continue;
+                else
+                {
+                        printf("INVALID FILE:     %s\n", currentDirFile->d_name);
+                        continue;
                 }
-
-                }
-
-             
-            //closedir(currentDir); 
         }
 
-int main(int argc, char **argv){
-        //need to correct this
-         if (argc < 3)
-                {
-                        printf("Invalid amount of arguments.");
-                        return 1;
-                }
+        //closedir(currentDir);
+}
 
-        char * columnName = argv[2];
-        char * directory;
-        char * outputdirectory;
+int main(int argc, char **argv)
+{
+        //need to correct this
+        if (argc < 3)
+        {
+                printf("Invalid amount of arguments.");
+                return 1;
+        }
+
+        char *columnName = argv[2];
+        char *directory;
+        char *outputdirectory;
         char buffer[1024];
 
         // 1 if a output directory is specified, 0 if no
@@ -808,51 +809,52 @@ int main(int argc, char **argv){
         //printf("%d\n", argc);
         //printf("%s  %s   \n",argv[0],argv[1],argv[2],argv[3],argv[4] );
 
-        if(argc == 3){
-                getcwd(buffer,sizeof(buffer));
+        if (argc == 3)
+        {
+                getcwd(buffer, sizeof(buffer));
                 directory = buffer;
                 outputdirectory = buffer;
         }
-        else
-        if(argc == 5){
-                if (strcmp(argv[3], "-d") == 0){
+        else if (argc == 5)
+        {
+                if (strcmp(argv[3], "-d") == 0)
+                {
                         directory = argv[4];
-                        getcwd(buffer,sizeof(buffer));
+                        getcwd(buffer, sizeof(buffer));
                         outputdirectory = buffer;
                 }
-        else{
-                getcwd(buffer,sizeof(buffer));
-                directory = buffer;
-                outputdirectory = argv[4];
-                obool = 1;
+                else
+                {
+                        getcwd(buffer, sizeof(buffer));
+                        directory = buffer;
+                        outputdirectory = argv[4];
+                        obool = 1;
                 }
         }
-        else
-                if(argc == 7){
+        else if (argc == 7)
+        {
                 directory = argv[4];
                 outputdirectory = argv[6];
                 obool = 1;
-                }
-        else{
+        }
+        else
+        {
                 printf("Invalid input.\n");
                 return -1;
         }
 
-
         /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir, 
          -o output directory*/
-
 
         //listdir(".", 0);
 
         sortDir(directory, columnName, outputdirectory, obool);
 
         // traverse through directories
-              // looking for csv files
-                // then fork and call sorter(inputfile, outputfile, outputdirectory)
-                // inside sorter first check if the file is a valid movie file to sort
-                // sort it and then output to the file specified and the directory specified
-
+        // looking for csv files
+        // then fork and call sorter(inputfile, outputfile, outputdirectory)
+        // inside sorter first check if the file is a valid movie file to sort
+        // sort it and then output to the file specified and the directory specified
 
         return 0;
 }
