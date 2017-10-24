@@ -527,29 +527,7 @@ void printShort(struct Tokenizer *tk, char *columnName)
                 printf("%f\n", tk->aspect_ratio);
         }
 }
-/*void listdir(const char *name, int indent)
-{
-        DIR *dir = NULL;
-        struct dirent *entry;
 
-        if (!(dir = opendir(name)))
-                return;
-        while ( (entry = readdir(dir)) != NULL)
-        {
-                if (entry->d_type == DT_DIR)
-                {
-                        char path[1024];
-                        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-                                continue;
-                        snprintf(path, sizeof(path), "%s%s", name, entry->d_name);
-                        printf("%*s[%s]\n", indent, "", entry->d_name);
-                        listdir(path, indent + 2);
-                }
-                else
-                        printf("%*s- %s\n", indent, "", entry->d_name);
-        }
-        closedir(dir);
-}*/
 
 void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
 {
@@ -615,24 +593,29 @@ void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
 
         /*
            Creating a new file and new file name.
-        
+
         */
         //  printf("\ngot here 3\n");
 
-        char *newfilename = malloc(strlen(filename) + 9);
-        strcpy(newfilename, "-sorted-");
-        strcat(newfilename, filename);
-        printf("\nnew file name:  %s", newfilename);
+        char *newfilename = malloc(strlen(filename) + strlen(columnName) + 9);
+        filename[strlen(filename)-4] = '\0';
+        strcpy(newfilename, filename);
+        strcat(newfilename, "-sorted-");
+        strcat(newfilename, columnName);
+        strcat(newfilename, ".csv");
+
+
+        //printf("\nnew file name:  %s", newfilename);
 
         char outputNewDir[1024];
         strcpy(outputNewDir, outputDir);
         strcat(outputNewDir, "/");
         strcat(outputNewDir, newfilename);
 
-        printf("\noutputdirectory:%s\n", outputNewDir);
+        //printf("\noutputdirectory:%s\n", outputNewDir);
 
         FILE *outputFile = fopen(outputNewDir, "w");
-        printf("\n\n----file created----\n\n");
+      //  printf("\n\n----file created----\n\n");
 
         struct Tokenizer rows[line];
         struct Tokenizer *ptr = head;
@@ -701,9 +684,12 @@ int is_Valid_CSV(struct dirent *file)
 
 void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
 {
+        int pidCount = 0;
+        pid_t pids[2000];
+        pid_t pid;
+
         struct dirent *currentDirFile; // Pointer for directory entry
         DIR *currentDir = opendir(path);
-        int children = 0;
         if (currentDir == NULL) // opendir returns NULL if couldn't open directory
         {
                 printf("Could not open current directory");
@@ -717,6 +703,10 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                         {
                                 continue;
                         }
+                        if (strcmp(currentDirFile->d_name, "sorter.dSYM") == 0)
+                        {
+                                continue;
+                        }
                         if (strcmp(currentDirFile->d_name, "..") == 0)
                         {
                                 continue;
@@ -725,35 +715,27 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                         {
                                 continue;
                         }
-                        printf("VALID DIRECTORY:    %s\n", currentDirFile->d_name);
+                      //  printf("VALID DIRECTORY:    %s\n", currentDirFile->d_name);
                         char fullpath[1024];
                         strcpy(fullpath, path);
                         strcat(fullpath, "/");
                         strcat(fullpath, currentDirFile->d_name);
-                        // need to creat a new path with oldpath/newpath
-                        pid_t pid, w;
-                        int status;
-                        pid = fork();
+                        // need to create a new path with oldpath/newpath
 
-                        if (pid < 0)
-                        {
-                                printf("error in fork\n");
-                        }
+                        pid = fork();
+                        pids[pidCount] = pid;
+                        pidCount++;
                         if (pid == 0)
                         { // child
+
                                 sortDir(fullpath, columnName, outputdirectory, obool);
                                 exit(0);
                         }
-                        // exit(0);
                 }
                 else if (is_Valid_CSV(currentDirFile) == 0)
                 {
                         //fork a sort on that file
-                        printf("CSV FILE: ----- Sorting it: %s\n", currentDirFile->d_name);
-
-                        pid_t pid, w;
-                        int status;
-
+                        //printf("CSV FILE: ----- Sorting it: %s\n", currentDirFile->d_name);
                         char outputPath[1024];
                         strcpy(outputPath, path);
 
@@ -763,13 +745,13 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                         strcat(fullpath, currentDirFile->d_name);
 
                         pid = fork();
+                        pids[pidCount] = pid;
+                        pidCount++;
 
-                        if (pid < 0)
-                        {
-                                printf("error in fork\n");
-                        }
                         if (pid == 0)
                         { // child
+
+
                                 FILE *sortfileptr = fopen(fullpath, "r+");
                                 if (obool == 0)
                                 {
@@ -779,15 +761,26 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                                 exit(0);
                         }
                 }
+                // INVALID file, not a directory or a valid csv file
                 else
                 {
-                        printf("INVALID FILE:     %s\n", currentDirFile->d_name);
+                       // printf("INVALID FILE:     %s\n", currentDirFile->d_name);
                         continue;
                 }
         }
 
-        //closedir(currentDir);
+// wait for all child processes to finish
+  for (int i = 0; i < pidCount; ++i) {
+      int status;
+      while (-1 == waitpid(pids[i], &status, 0));
+      if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+          printf("Process  %d, pid: %d  failed", i, pids[i]);
+          exit(1);
+      }
+  }
+
 }
+
 
 int main(int argc, char **argv)
 {
@@ -843,12 +836,11 @@ int main(int argc, char **argv)
                 return -1;
         }
 
-        /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir, 
+        /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir,
          -o output directory*/
 
-        //listdir(".", 0);
-
         sortDir(directory, columnName, outputdirectory, obool);
+
 
         // traverse through directories
         // looking for csv files
