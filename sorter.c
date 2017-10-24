@@ -768,9 +768,9 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                         continue;
                 }
         }
-
+int i = 0;
 // wait for all child processes to finish
-  for (int i = 0; i < pidCount; ++i) {
+for (i = 0; i < pidCount; ++i) {
       int status;
       while (-1 == waitpid(pids[i], &status, 0));
       if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
