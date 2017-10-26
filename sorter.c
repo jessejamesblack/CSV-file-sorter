@@ -693,9 +693,9 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
         {
                 printf("Could not open current directory\n");
         }
-//printf("Initial PID: \n");
+        //printf("Initial PID: \n");
         //fflush(stdout);
-        
+
         while ((currentDirFile = readdir(currentDir)) != NULL)
         {
                 if (currentDirFile->d_type == DT_DIR)
@@ -722,7 +722,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
 
                         //printf("fullpath: %s\n", fullpath);
 
-                       int pid = fork();
+                        int pid = fork();
                         // printf("%d\n", pid);
 
                         if (pid < 0)
@@ -732,7 +732,8 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                         if (pid == 0)
                         { // child
                                 int q = 0;
-                                for(q = 0; q<pidCount; q++){
+                                for (q = 0; q < pidCount; q++)
+                                {
                                         pids[q] = 0;
                                 }
                                 pidCount = 0;
@@ -748,8 +749,8 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                                 pids[pidCount] = pid;
                                 pidCount++;
                                 printf("Forked PID %d to process directory: %s\n", pid, currentDirFile->d_name);
-                               // fprintf(stdout, "%d, \n", pid);
-                               // printf("%d,", pid);
+                                // fprintf(stdout, "%d, \n", pid);
+                                // printf("%d,", pid);
                         }
                 }
                 else if (is_Valid_CSV(currentDirFile) == 0)
@@ -764,7 +765,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                         strcat(fullpath, "/");
                         strcat(fullpath, currentDirFile->d_name);
 
-                      int  pid = fork();
+                        int pid = fork();
                         //  printf("%d\n", pid);
 
                         if (pid < 0)
@@ -774,7 +775,8 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                         if (pid == 0)
                         { // child
                                 int u = 0;
-                                for(u = 0; u < pidCount; u++){
+                                for (u = 0; u < pidCount; u++)
+                                {
                                         pids[u] = 0;
                                 }
                                 pidCount = 0;
@@ -792,8 +794,8 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                                 pids[pidCount] = pid;
                                 pidCount++;
                                 printf("Forked PID %d to process valid CSV FILE: %s\n", pid, currentDirFile->d_name);
-                               // fprintf(stdout, "%d, \n", pid);
-                               // printf("%d,", pid);
+                                // fprintf(stdout, "%d, \n", pid);
+                                // printf("%d,", pid);
                         }
                 }
                 // INVALID file, not a directory or a valid csv file
@@ -805,14 +807,23 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
 
         int i = 0;
         // wait for all child processes to finish
-
-        for (i = 0; i < pidCount; i++)
+        FILE *f = fopen("pidCount.txt", "w");
+        if (f == NULL)
         {
-              wait(NULL);
-              fprintf(stdout,"%d, ", pids[i]);
+                printf("Error opening file!\n");
+                exit(1);
         }
 
 
+        fprintf(f, "PidCount: %d\n", pidCount);
+
+        fclose(f);
+
+        for (i = 0; i < pidCount; i++)
+        {
+                wait(NULL);
+                fprintf(stdout, "%d, ", pids[i]);
+        }
 }
 
 int main(int argc, char **argv)
@@ -873,7 +884,6 @@ int main(int argc, char **argv)
          -o output directory*/
         sortDir(directory, columnName, outputdirectory, obool);
         //fprintf(stdout, "\n");
-        
 
         //printf("pid count: %d\n", pidCount);
 
@@ -887,7 +897,7 @@ int main(int argc, char **argv)
         // then fork and call sorter(inputfile, outputfile, outputdirectory)
         // inside sorter first check if the file is a valid movie file to sort
         // sort it and then output to the file specified and the directory specified
-       // printf("\n");
-      
+        // printf("\n");
+
         return 0;
 }
