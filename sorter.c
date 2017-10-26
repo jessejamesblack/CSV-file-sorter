@@ -682,7 +682,7 @@ int is_Valid_CSV(struct dirent *file)
         return -1;
 }
 
-void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
+/*void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
 {
         int pidCount = 0;
         pid_t pids[2000];
@@ -779,7 +779,7 @@ for (i = 0; i < pidCount; ++i) {
       }
   }
 
-}
+}*/
 
 
 int main(int argc, char **argv)
@@ -839,8 +839,109 @@ int main(int argc, char **argv)
         /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir,
          -o output directory*/
 
-        sortDir(directory, columnName, outputdirectory, obool);
+      //  sortDir(directory, columnName, outputdirectory, obool);
 
+        char * path = directory;
+
+        int pidCount = 0;
+        pid_t pids[2000];
+        pid_t pid;
+        char fullpath[1024];
+        strcpy(fullpath, path);
+        struct dirent *currentDirFile; // Pointer for directory entry
+        DIR *currentDir = opendir(path);
+        if (currentDir == NULL) // opendir returns NULL if couldn't open directory
+        {
+                printf("Could not open current directory");
+        }
+        while ((currentDirFile = readdir(currentDir)) != NULL)
+        {
+                if (currentDirFile->d_type == DT_DIR)
+                {
+                        // fork this new directory to be processed
+                        if (strcmp(currentDirFile->d_name, ".") == 0)
+                        {
+                                continue;
+                        }
+                        if (strcmp(currentDirFile->d_name, "sorter.dSYM") == 0)
+                        {
+                                continue;
+                        }
+                        if (strcmp(currentDirFile->d_name, "..") == 0)
+                        {
+                                continue;
+                        }
+                        if (strcmp(currentDirFile->d_name, ".git") == 0)
+                        {
+                                continue;
+                        }
+                      //  printf("VALID DIRECTORY:    %s\n", currentDirFile->d_name);
+                        // need to create a new path with oldpath/newpath
+
+                
+                        //printf("fullpath: %s\n", fullpath);
+                
+                        pid = fork();
+                        pidCount++;
+                        pids[pidCount] = pid;
+
+                        if(pid <0){
+                                printf("error\n");
+                        }
+                        if (pid == 0)
+                        { // child
+                                strcat(fullpath, "/");
+                                strcat(fullpath, currentDirFile->d_name);
+                                path = fullpath;
+                                currentDir = opendir(fullpath);
+                               // sortDir(fullpath, columnName, outputdirectory, obool);
+                              //  exit(0);
+                        }
+                        
+                }
+                else if (is_Valid_CSV(currentDirFile) == 0)
+                {
+                        //fork a sort on that file
+                        //printf("CSV FILE: ----- Sorting it: %s\n", currentDirFile->d_name);
+                        char outputPath[1024];
+                        strcpy(outputPath, path);
+
+                        char fullpath[1024];
+                        strcpy(fullpath, path);
+                        strcat(fullpath, "/");
+                        strcat(fullpath, currentDirFile->d_name);
+                        pidCount++;
+                        pids[pidCount] = pid;
+                        pid = fork();
+
+                        if(pid <0){
+                                printf("error\n");
+                        }
+                        if (pid == 0)
+                        { // child
+
+
+                                FILE *sortfileptr = fopen(fullpath, "r+");
+                                if (obool == 0)
+                                {
+                                        outputdirectory = outputPath;
+                                }
+                                sorter(columnName, sortfileptr, outputdirectory, currentDirFile->d_name);
+                                exit(0);
+                        }
+                       
+                }
+                // INVALID file, not a directory or a valid csv file
+                else
+                {
+                        continue;
+                }
+        }
+int i = 0;
+// wait for all child processes to finish
+for (int i = 0; i < pidCount; i++) {
+    while (waitpid(pids[i], NULL, 0) > 0);
+}
 
         // traverse through directories
         // looking for csv files
