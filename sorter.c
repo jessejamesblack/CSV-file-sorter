@@ -814,15 +814,18 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                 exit(1);
         }
 
-
         fprintf(f, "PidCount: %d\n", pidCount);
 
-        fclose(f);
+
+        //fclose(f);
 
         for (i = 0; i < pidCount; i++)
         {
+                //int childval = 1;
                 wait(NULL);
+                //wait(&childval);
                 fprintf(stdout, "%d, ", pids[i]);
+                //fprintf(stdout,"%d ", (childval/255));
         }
 }
 
