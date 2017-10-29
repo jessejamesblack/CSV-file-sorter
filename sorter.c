@@ -847,19 +847,35 @@ int main(int argc, char **argv)
                         getcwd(buffer, sizeof(buffer));
                         outputdirectory = buffer;
                 }
-                else
+                else if(strcmp(argv[3], "-o") == 0)
                 {
                         getcwd(buffer, sizeof(buffer));
                         directory = buffer;
                         outputdirectory = argv[4];
                         obool = 1;
                 }
+                else{
+                printf("Invalid input.\n");
+                return -1;
+                }
         }
         else if (argc == 7)
         {
+                if((strcmp(argv[3], "-d") == 0) && (strcmp(argv[5], "-o") == 0)){
                 directory = argv[4];
                 outputdirectory = argv[6];
                 obool = 1;
+                }
+                else 
+                if((strcmp(argv[3], "-o") == 0) && (strcmp(argv[5], "-d") == 0)){
+                directory = argv[6];
+                outputdirectory = argv[4];
+                obool = 1;
+                }
+                else{
+                printf("Invalid input.\n");
+                return -1;
+                }
         }
         else
         {
