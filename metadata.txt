@@ -1,8 +1,2 @@
-Parent with PID: 2 , forked PID 154 to process directory: test
-Parent with PID: 153, forked PID 155 to process valid CSV FILE: file7.csv
-Parent with PID: 153 , forked PID 156 to process directory: hahahahafolder
-Parent with PID: 153 , forked PID 157 to process directory: test2
-Parent with PID: 154, forked PID 158 to process valid CSV FILE: movie_metadata.csv
-Parent with PID: 154, forked PID 159 to process valid CSV FILE: file2.csv
-Parent with PID: 154 , forked PID 160 to process directory: test3
-Parent with PID: 157, forked PID 161 to process valid CSV FILE: brian.csv
+Parent with PID: 2 , forked PID 249 to process directory: test/hahahahafolder/
+Parent with PID: 248, forked PID 250 to process valid CSV FILE: movie_metadata.csv
