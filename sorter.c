@@ -612,7 +612,7 @@ void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
 
         //printf("\noutputdirectory:%s\n", outputNewDir);
 
-        FILE *outputFile = fopen(outputNewDir, "w");
+        FILE *outputFile = fopen(outputNewDir, "w+");
         //  printf("\n\n----file created----\n\n");
 
         struct Tokenizer rows[line];
@@ -680,7 +680,7 @@ int is_Valid_CSV(struct dirent *file)
         return -1;
 }
 
-void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
+void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FILE * meta)
 {
         int pidCount = 0;
         int currentPids = 0;
@@ -739,8 +739,9 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                                 currentPids++;
                                 printf("%d ", pid);
                                 fflush(stdout);
+                                fprintf(meta, "Parent with PID: %d , forked PID %d to process directory: %s\n", getppid(), pid, currentDirFile->d_name);
+                                fflush(meta);
 
-                              //  printf("Forked PID %d to process directory: %s\n", pid, currentDirFile->d_name);
                         }
                 }
                 else if (is_Valid_CSV(currentDirFile) == 0)
@@ -779,8 +780,8 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool)
                                 currentPids++;
                                 printf("%d ", pid);
                                 fflush(stdout);
-                              //  printf("Forked PID %d to process valid CSV FILE: %s\n", pid, currentDirFile->d_name);
-
+                                fprintf(meta, "Parent with PID: %d, forked PID %d to process valid CSV FILE: %s\n", getppid(), pid, currentDirFile->d_name);
+                                fflush(meta);
                         }
                 }
                 // INVALID file, not a directory or a valid csv file
@@ -868,22 +869,27 @@ int main(int argc, char **argv)
 
         /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir,
          -o output directory*/
+
+        FILE * meta = fopen("metadata.txt", "w+");
+
+
         printf("Initial PID: %d\n", getpid());
         printf("PIDS of all child processes: ");
         fflush(stdout);
         pid_t temp = fork();
 
         if(temp == 0){
-           sortDir(directory, columnName, outputdirectory, obool);
+           sortDir(directory, columnName, outputdirectory, obool, meta);
         }
         if(temp > 0){
-                //printf("Forked PID %d to process directory: %s\n", temp, directory);
+                fprintf(meta, "Parent with PID: %d , forked PID %d to process directory: %s\n", getppid(), temp, directory);
+                fflush(meta);
                 printf("%d ", temp);
                 int waiting = -1;
                 wait(&waiting);
                 printf("\nTotal number of processes: %d\n", (waiting/255)+1);
+               fclose(meta);
         }
-
 
         // traverse through directories
         // looking for csv files

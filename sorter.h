@@ -17,16 +17,6 @@
 *
 ******/
 
-/* A process is a single process.  */
-typedef struct process
-{
-    struct process *next; /* next process in pipeline */
-    pid_t pid;            /* process ID */
-    //char completed;       /* true if process has completed */
-    //char stopped;         /* true if process has stopped */
-    //int status;           /* reported status value */
-} process;
-
 //Suggestion: define a struct that mirrors a record (row) of the data set
 struct Tokenizer
 {
@@ -89,5 +79,5 @@ void mergeExtra(struct directorRating top10[], int l, int m, int r);
 
 void sorter(char * columnName, FILE * moviefile, char * outputDir, char * filename);
 
-void sortDir(char *path, char *columnName, char *outputdirectory, int obool);
+void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FILE * meta);
 
