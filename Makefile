@@ -8,38 +8,40 @@ default:
 sorter: sorter.c mergesort.c sorter.h
 	gcc $(CCFLAGS) sorter.c mergesort.c sorter.h -o sorter
 test:
-	cat movie_metadata.csv | ./sorter -c color > color.csv
-	cat movie_metadata.csv | ./sorter -c director_name > director_name.csv
-	cat movie_metadata.csv | ./sorter -c num_critic_for_reviews > num_critic_for_reviews.csv
-	cat movie_metadata.csv | ./sorter -c duration > duration.csv
-	cat movie_metadata.csv | ./sorter -c director_facebook_likes > director_facebook_likes.csv
-	cat movie_metadata.csv | ./sorter -c actor_3_facebook_likes > actor_3_facebook_likes.csv
-	cat movie_metadata.csv | ./sorter -c actor_2_name > actor_2_name.csv
-	cat movie_metadata.csv | ./sorter -c actor_1_facebook_likes > actor_1_facebook_likes.csv
-	cat movie_metadata.csv | ./sorter -c gross > gross.csv
-	cat movie_metadata.csv | ./sorter -c genres > genres.csv
-	cat movie_metadata.csv | ./sorter -c actor_1_name > actor_1_name.csv
-	cat movie_metadata.csv | ./sorter -c movie_title > movie_title.csv
-	cat movie_metadata.csv | ./sorter -c num_voted_users > num_voted_users.csv
-	cat movie_metadata.csv | ./sorter -c cast_total_facebook_likes > cast_total_facebook_likes.csv
-	cat movie_metadata.csv | ./sorter -c actor_3_name > actor_3_name.csv
-	cat movie_metadata.csv | ./sorter -c facenumber_in_poster > facenumber_in_poster.csv
-	cat movie_metadata.csv | ./sorter -c plot_keywords > plot_keywords.csv
-	cat movie_metadata.csv | ./sorter -c movie_imdb_link > movie_imdb_link.csv
-	cat movie_metadata.csv | ./sorter -c num_user_for_reviews > num_user_for_reviews.csv
-	cat movie_metadata.csv | ./sorter -c language > language.csv
-	cat movie_metadata.csv | ./sorter -c country > country.csv
-	cat movie_metadata.csv | ./sorter -c content_rating > content_rating.csv
-	cat movie_metadata.csv | ./sorter -c budget > budget.csv
-	cat movie_metadata.csv | ./sorter -c title_year > title_year.csv
-	cat movie_metadata.csv | ./sorter -c actor_2_facebook_likes > actor_2_facebook_likes.csv
-	cat movie_metadata.csv | ./sorter -c imdb_score > imdb_score.csv
-	cat movie_metadata.csv | ./sorter -c aspect_ratio > aspect_ratio.csv
-	cat movie_metadata.csv | ./sorter -c movie_facebook_likes > movie_facebook_likes.csv
+	./sorter -c color 
+	./sorter -c director_name 
+	./sorter -c num_critic_for_reviews 
+	./sorter -c duration > duration.csv
+	./sorter -c director_facebook_likes 
+	./sorter -c actor_3_facebook_likes 
+	./sorter -c actor_2_name 
+	./sorter -c actor_1_facebook_likes 
+	./sorter -c gross 
+	./sorter -c genres 
+	./sorter -c actor_1_name 
+	./sorter -c movie_title 
+	./sorter -c num_voted_users 
+	./sorter -c cast_total_facebook_likes
+	./sorter -c actor_3_name 
+	./sorter -c facenumber_in_poster 
+	./sorter -c plot_keywords
+	./sorter -c movie_imdb_link 
+	./sorter -c num_user_for_reviews 
+	./sorter -c language 
+	./sorter -c country 
+	./sorter -c content_rating 
+	./sorter -c budget 
+	./sorter -c title_year 
+	./sorter -c actor_2_facebook_likes 
+	./sorter -c imdb_score 
+	./sorter -c aspect_ratio 
+	./sorter -c movie_facebook_likes   
 valgrind:
 	valgrind --leak-check=full --show-reachable=yes --track-origins=yes -v ./sorter -c color < movie_metadata.csv
 clean:
 	find /mnt/c/Users/Brian/Desktop/fall2017projects/cs214project1/* -type f -name '*-sorted-*' -delete
+clean2:
+	rm sorter
 fullclean:
 	cp movie_metadata.csv cp
 	rm -rf sorter sorter.exe *.csv
