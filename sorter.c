@@ -530,43 +530,31 @@ void printShort(struct Tokenizer *tk, char *columnName)
 
 void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
 {
-        //printf("jesse\n");
         int line = 0;
 
-        // printf("outPut Directory: %s\n", outputDir);
-        //  printf("File name: %s\n", filename);
-
         //getting the column names
-        char *str1 = malloc(1024);
         char bufferColumn[1024];
-        int i, ch, blah = 0;
-        //      printf("\ngot here 1\n");
+        bufferColumn[0] = '\0';
+        char stringnn[1024];
+        int blah = 0;
+        stringnn[0] = '\0';
 
-        for (i = 0; (i < (sizeof(bufferColumn) - 1) && ((ch = fgetc(moviefile)) != EOF) && (ch != '\r')); i++)
+        if(fgets(bufferColumn,1024,moviefile) != NULL)
         {
-                bufferColumn[i] = ch;
                 blah = 1;
         }
         if (blah == 0)
         {
                 printf("ERROR: Empty file.\n");
         }
-        bufferColumn[i] = '\0';
 
         struct Tokenizer *head = NULL, *curr = NULL, *newNode = NULL;
-        //   printf("\ngot here 2\n");
 
         //getting the rest of the rows
-        while (fgets(str1, 1024, moviefile) != NULL)
+        while (fgets(stringnn, 1024, moviefile) != NULL)
         {
-                char buffer[1024];
-                int i, ch;
-                // check for empty line
-                for (i = 0; (i < (sizeof(buffer) - 1) && ((ch = fgetc(moviefile)) != EOF) && (ch != '\r')); i++)
-                        buffer[i] = ch;
-                buffer[i] = '\0';
                 // create tokenizer struct and store at next open spot in array
-                newNode = TKCreate(buffer);
+                newNode = TKCreate(stringnn);
                 if (newNode != NULL)
                 { // to protect against empty lines in the file
                         if (head == NULL)
@@ -647,7 +635,7 @@ void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
         }
 
         int z = 0;
-        fprintf(outputFile, "%s\n", bufferColumn);
+        fprintf(outputFile, "%s", bufferColumn);
         while (z < line)
         {
                 printRecord(&rows[z], outputFile);
@@ -800,6 +788,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                 wait(&result);
                 pidCount = pidCount + (result/255);
         }
+
         exit(pidCount+1);
 }
 
