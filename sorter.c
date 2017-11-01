@@ -684,6 +684,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
 
         while ((currentDirFile = readdir(currentDir)) != NULL)
         {
+                //current dirent is a folder that needs to be forked
                 if (currentDirFile->d_type == DT_DIR)
                 {
                         // fork this new directory to be processed
@@ -703,10 +704,8 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         {
                                 continue;
                         }
-                        //  printf("VALID DIRECTORY:    %s\n", currentDirFile->d_name);
                         // need to create a new path with oldpath/newpath
 
-                        //printf("fullpath: %s\n", fullpath);
 
                         int pid = fork();
                         if (pid < 0)
@@ -715,7 +714,6 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         }
                         if (pid == 0)
                         { // child
-                                //printf("%d ", getpid());
                                 strcat(fullpath, "/");
                                 strcat(fullpath, currentDirFile->d_name);
                                 path = fullpath;
@@ -725,9 +723,9 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         if (pid > 0)
                         {
                                 currentPids++;
-                                printf("%d ", pid);
+                                printf("%d, ", pid);
                                 fflush(stdout);
-                                fprintf(meta, "Parent with PID: %d , forked PID %d to process directory: %s\n", getppid(), pid, currentDirFile->d_name);
+                                fprintf(meta, "Parent with PID: %d, forked PID %d to process directory: %s\n", getppid(), pid, currentDirFile->d_name);
                                 fflush(meta);
 
                         }
@@ -735,7 +733,6 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                 else if (is_Valid_CSV(currentDirFile) == 0)
                 {
                         //fork a sort on that file
-                        //printf("CSV FILE: ----- Sorting it: %s\n", currentDirFile->d_name);
                         char outputPath[1024];
                         strcpy(outputPath, path);
                         char fullpath[1024];
@@ -752,7 +749,6 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         }
                         if (pid == 0)
                         { // child
-                                //printf("%d ", getpid());
                         
                                 FILE *sortfileptr = fopen(fullpath, "r+");
                                 if (obool == 0)
@@ -766,7 +762,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         if (pid > 0)
                         {
                                 currentPids++;
-                                printf("%d ", pid);
+                                printf("%d, ", pid);
                                 fflush(stdout);
                                 fprintf(meta, "Parent with PID: %d, forked PID %d to process valid CSV FILE: %s\n", getppid(), pid, currentDirFile->d_name);
                                 fflush(meta);
@@ -887,13 +883,13 @@ int main(int argc, char **argv)
            sortDir(directory, columnName, outputdirectory, obool, meta);
         }
         if(temp > 0){
-                fprintf(meta, "Parent with PID: %d , forked PID %d to process directory: %s\n", getppid(), temp, directory);
+                fprintf(meta, "Parent with PID: %d, forked PID %d to process directory: %s\n", getppid(), temp, directory);
                 fflush(meta);
                 printf("%d ", temp);
                 int waiting = -1;
                 wait(&waiting);
                 printf("\nTotal number of processes: %d\n", (waiting/255)+1);
-               fclose(meta);
+                fclose(meta);
         }
 
         // traverse through directories

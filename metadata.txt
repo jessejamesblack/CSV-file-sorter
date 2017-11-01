@@ -1,11 +1,5 @@
-Parent with PID: 8416 , forked PID 8828 to process directory: /Users/bschillaci25/Desktop/cs214project1
-Parent with PID: 8827 , forked PID 8829 to process directory: folder2
-Parent with PID: 8827 , forked PID 8830 to process directory: test
-Parent with PID: 8828, forked PID 8831 to process valid CSV FILE: color.csv
-Parent with PID: 8828, forked PID 8832 to process valid CSV FILE: file7.csv
-Parent with PID: 8828 , forked PID 8833 to process directory: hahahahafolder
-Parent with PID: 8828 , forked PID 8834 to process directory: test2
-Parent with PID: 8830, forked PID 8835 to process valid CSV FILE: movie_metadata.csv
-Parent with PID: 8830, forked PID 8836 to process valid CSV FILE: file2.csv
-Parent with PID: 8830 , forked PID 8837 to process directory: test3
-Parent with PID: 8834, forked PID 8838 to process valid CSV FILE: brian.csv
+Parent with PID: 2, forked PID 650 to process directory: folder1
+Parent with PID: 649, forked PID 651 to process directory: foldernm
+Parent with PID: 649, forked PID 652 to process directory: folderxd
+Parent with PID: 649, forked PID 653 to process directory: no
+Parent with PID: 649, forked PID 654 to process directory: yes
