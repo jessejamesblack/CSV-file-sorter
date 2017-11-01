@@ -1,5 +1,15 @@
-Parent with PID: 2, forked PID 650 to process directory: folder1
-Parent with PID: 649, forked PID 651 to process directory: foldernm
-Parent with PID: 649, forked PID 652 to process directory: folderxd
-Parent with PID: 649, forked PID 653 to process directory: no
-Parent with PID: 649, forked PID 654 to process directory: yes
+Parent with PID: 9191, forked PID 13554 to process valid CSV FILE: color.csv
+Parent with PID: 9191, forked PID 13555 to process valid CSV FILE: dataset1.CSV
+Parent with PID: 9191, forked PID 13556 to process valid CSV FILE: dataset2.csv
+Parent with PID: 9191, forked PID 13557 to process valid CSV FILE: dataset3.csv
+Parent with PID: 9191, forked PID 13558 to process valid CSV FILE: dataset4.csv
+Parent with PID: 9191, forked PID 13559 to process directory: folder2
+Parent with PID: 9191, forked PID 13560 to process directory: test
+Parent with PID: 13553, forked PID 13561 to process valid CSV FILE: color.csv
+Parent with PID: 13553, forked PID 13562 to process valid CSV FILE: file7.csv
+Parent with PID: 13553, forked PID 13563 to process directory: hahahahafolder
+Parent with PID: 13553, forked PID 13564 to process directory: test2
+Parent with PID: 13560, forked PID 13565 to process valid CSV FILE: movie_metadata.csv
+Parent with PID: 13560, forked PID 13566 to process valid CSV FILE: file2.csv
+Parent with PID: 13560, forked PID 13567 to process directory: test3
+Parent with PID: 13564, forked PID 13568 to process valid CSV FILE: brian.csv

@@ -39,7 +39,7 @@ test:
 valgrind:
 	valgrind --leak-check=full --show-reachable=yes --track-origins=yes -v ./sorter -c color < movie_metadata.csv
 clean:
-	find /mnt/c/Users/Brian/Desktop/fall2017projects/cs214project1/* -type f -name '*-sorted-*' -delete
+	find /Users/bschillaci25/desktop/cs214project1/ -type f -name '*-sorted-*' -delete
 clean2:
 	rm sorter
 fullclean:

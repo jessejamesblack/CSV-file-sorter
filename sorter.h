@@ -8,6 +8,7 @@
 #include <dirent.h>
 #include <sys/wait.h>
 #include <sys/mman.h>
+#include <errno.h>
 
 /*****
 *
@@ -59,6 +60,7 @@ struct directorRating{
   int appearances;
   struct directorRating *next;
 };
+
 
 void printSort(struct Tokenizer, char *columnName);
 void mergesortString(struct Tokenizer rows[], char *columnName, int l, int r);

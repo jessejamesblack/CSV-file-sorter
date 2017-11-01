@@ -570,7 +570,6 @@ void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
                         curr->next = NULL;
                         line++;
                 }
-                // printf("%s\n", buffer);
         }
 
         if (line == 0)
@@ -582,7 +581,6 @@ void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
            Creating a new file and new file name.
 
         */
-        //  printf("\ngot here 3\n");
 
         char *newfilename = malloc(strlen(filename) + strlen(columnName) + 9);
         filename[strlen(filename) - 4] = '\0';
@@ -590,18 +588,29 @@ void sorter(char *columnName, FILE *moviefile, char *outputDir, char *filename)
         strcat(newfilename, "-sorted-");
         strcat(newfilename, columnName);
         strcat(newfilename, ".csv");
-
-        //printf("\nnew file name:  %s", newfilename);
-
         char outputNewDir[1024];
+        DIR * dir = opendir(outputDir);
+        if (dir)
+        {
+            /* Directory exists. */
+            closedir(dir);
+        }
+        else if (ENOENT == errno)
+        {
+            /* Directory does not exist. */
+        fflush(stdout);
+        printf("\nOutput directory doesn't exist for outputting sorted file: %s\n", newfilename);
+        fflush(stdout);
+        }
+        else
+        {
+            /* opendir() failed for some other reason. */
+                printf("opendir failed\n");
+        }
         strcpy(outputNewDir, outputDir);
         strcat(outputNewDir, "/");
         strcat(outputNewDir, newfilename);
-
-        //printf("\noutputdirectory:%s\n", outputNewDir);
-
         FILE *outputFile = fopen(outputNewDir, "w+");
-        //  printf("\n\n----file created----\n\n");
 
         struct Tokenizer rows[line];
         struct Tokenizer *ptr = head;
@@ -656,27 +665,27 @@ const char *get_filename_ext(const char *filename)
 
 int is_Valid_CSV(struct dirent *file)
 {
-        //printf("%s\n",get_filename_ext(file->d_name));
         if (strstr(file->d_name, "-sorted-"))
         {
                 return -1;
         }
-        if (strcmp(get_filename_ext(file->d_name), "csv") == 0)
+        if (strcasecmp(get_filename_ext(file->d_name), "csv") == 0)
         {
                 return 0;
         }
         return -1;
 }
 
+
 void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FILE * meta)
 {
-        int pidCount = 0;
+        int main  = getpid();
+        int *shared = mmap(NULL, sizeof(int), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1,0);
         int currentPids = 0;
         char fullpath[1024];
         strcpy(fullpath, path);
         struct dirent *currentDirFile; // Pointer for directory entry
         DIR *currentDir = opendir(path);
-        //int initial = 1;
         if (currentDir == NULL) // opendir returns NULL if couldn't open directory
         {
                 printf("Could not open current directory\n");
@@ -706,7 +715,6 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         }
                         // need to create a new path with oldpath/newpath
 
-
                         int pid = fork();
                         if (pid < 0)
                         {
@@ -714,6 +722,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         }
                         if (pid == 0)
                         { // child
+                                *shared = *shared + 1;
                                 strcat(fullpath, "/");
                                 strcat(fullpath, currentDirFile->d_name);
                                 path = fullpath;
@@ -725,6 +734,11 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                                 currentPids++;
                                 printf("%d, ", pid);
                                 fflush(stdout);
+                               /* int u = 0;
+                                for(u = 0; u<indent; u++){
+                                fprintf(meta, "    ");
+                                }
+                                indent++;*/
                                 fprintf(meta, "Parent with PID: %d, forked PID %d to process directory: %s\n", getppid(), pid, currentDirFile->d_name);
                                 fflush(meta);
 
@@ -749,7 +763,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                         }
                         if (pid == 0)
                         { // child
-                        
+                        *shared = *shared + 1;
                                 FILE *sortfileptr = fopen(fullpath, "r+");
                                 if (obool == 0)
                                 {
@@ -764,6 +778,11 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                                 currentPids++;
                                 printf("%d, ", pid);
                                 fflush(stdout);
+                                /*int u =0;
+                                for(u = 0; u<indent; u++){
+                                fprintf(meta, "    ");
+                                }
+                                indent++;*/
                                 fprintf(meta, "Parent with PID: %d, forked PID %d to process valid CSV FILE: %s\n", getppid(), pid, currentDirFile->d_name);
                                 fflush(meta);
                         }
@@ -777,16 +796,15 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
 
         int i = 0;
         // wait for all child processes to finish
-        // printf("Pids of parent: %d\n", currentPids);
         for (i = 0; i < currentPids; i++)
         {
-                int result = -1;
-                wait(&result);
-                pidCount = pidCount + (result/255);
+                wait(NULL);
         }
 
-        exit(pidCount+1);
+        if(getpid() == main)
+        printf("\nTotal number of processes: %d\n", *shared +1);
 }
+
 
 int main(int argc, char **argv)
 {
@@ -801,7 +819,6 @@ int main(int argc, char **argv)
         char *directory;
         char *outputdirectory;
         char buffer[1024];
-
         if ((strcmp(columnName, "num_critic_for_reviews") == 0) || (strcmp(columnName, "duration") == 0) || (strcmp(columnName, "director_facebook_likes") == 0) || (strcmp(columnName, "actor_3_facebook_likes") == 0) || (strcmp(columnName, "actor_1_facebook_likes") == 0) || (strcmp(columnName, "gross") == 0) || (strcmp(columnName, "num_voted_users") == 0) || (strcmp(columnName, "cast_total_facebook_likes") == 0) || (strcmp(columnName, "facenumber_in_poster") == 0) || (strcmp(columnName, "num_user_for_reviews") == 0) || (strcmp(columnName, "budget") == 0) || (strcmp(columnName, "title_year") == 0) || (strcmp(columnName, "actor_2_facebook_likes") == 0) || (strcmp(columnName, "movie_facebook_likes") == 0)
         ||(strcmp(columnName, "imdb_score") == 0) || (strcmp(columnName, "aspect_ratio") == 0) ||(strcmp(columnName, "color") == 0) || (strcmp(columnName, "director_name") == 0) || (strcmp(columnName, "actor_2_name") == 0) || (strcmp(columnName, "genres") == 0) || (strcmp(columnName, "actor_1_name") == 0) || (strcmp(columnName, "movie_title") == 0) || (strcmp(columnName, "actor_3_name") == 0) || (strcmp(columnName, "plot_keywords") == 0) || (strcmp(columnName, "movie_imdb_link") == 0) || (strcmp(columnName, "language") == 0) || (strcmp(columnName, "country") == 0) || (strcmp(columnName, "content_rating") == 0))
         {
@@ -814,9 +831,6 @@ int main(int argc, char **argv)
         }
         // 1 if a output directory is specified, 0 if no
         int obool = 0;
-
-        //printf("%d\n", argc);
-        //printf("%s  %s   \n",argv[0],argv[1],argv[2],argv[3],argv[4] );
 
         if (argc == 3)
         {
@@ -852,10 +866,10 @@ int main(int argc, char **argv)
                 obool = 1;
                 }
                 else 
-                if((strcmp(argv[3], "-o") == 0) && (strcmp(argv[5], "-d") == 0)){
-                directory = argv[6];
-                outputdirectory = argv[4];
-                obool = 1;
+                        if((strcmp(argv[3], "-o") == 0) && (strcmp(argv[5], "-d") == 0)){
+                                directory = argv[6];
+                                outputdirectory = argv[4];
+                                obool = 1;
                 }
                 else{
                 printf("Invalid input.\n");
@@ -870,27 +884,29 @@ int main(int argc, char **argv)
 
         /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir,
          -o output directory*/
+        
+        DIR * dir = opendir(directory);
+        if (dir)
+        {
+            /* Directory exists. */
+            closedir(dir);
+        }
+        else if (ENOENT == errno)
+        {
+        fflush(stdout);
+        printf("\nDirectory to search in is invalid. Please input valid directory. \n\n");
+        fflush(stdout);
+        return -1;
+        }
+
 
         FILE * meta = fopen("metadata.txt", "w+");
-
-
         printf("Initial PID: %d\n", getpid());
         printf("PIDS of all child processes: ");
         fflush(stdout);
-        pid_t temp = fork();
 
-        if(temp == 0){
-           sortDir(directory, columnName, outputdirectory, obool, meta);
-        }
-        if(temp > 0){
-                fprintf(meta, "Parent with PID: %d, forked PID %d to process directory: %s\n", getppid(), temp, directory);
-                fflush(meta);
-                printf("%d ", temp);
-                int waiting = -1;
-                wait(&waiting);
-                printf("\nTotal number of processes: %d\n", (waiting/255)+1);
-                fclose(meta);
-        }
+        sortDir(directory, columnName, outputdirectory, obool, meta);
+        fclose(meta);
 
         // traverse through directories
         // looking for csv files
