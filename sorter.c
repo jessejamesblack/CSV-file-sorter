@@ -679,7 +679,7 @@ int is_Valid_CSV(struct dirent *file)
 
 void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FILE * meta)
 {
-        int main  = getpid();
+        int mainn  = getpid();
         int *shared = mmap(NULL, sizeof(int), PROT_READ|PROT_WRITE, MAP_SHARED|MAP_ANONYMOUS, -1,0);
         int currentPids = 0;
         char fullpath[1024];
@@ -801,7 +801,7 @@ void sortDir(char *path, char *columnName, char *outputdirectory, int obool, FIL
                 wait(NULL);
         }
 
-        if(getpid() == main)
+        if(getpid() == mainn)
         printf("\nTotal number of processes: %d\n", *shared +1);
 }
 
@@ -884,7 +884,7 @@ int main(int argc, char **argv)
 
         /* look for arguments here -c column name, -d  starting directory  -- could also be black->curr dir,
          -o output directory*/
-        
+
         DIR * dir = opendir(directory);
         if (dir)
         {
